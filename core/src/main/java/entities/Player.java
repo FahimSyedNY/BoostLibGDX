@@ -95,7 +95,7 @@ public class Player {
             velY += GRAVITY;
             if (cameraJumpShift < 20) {
                 cameraJumpShift++;
-                cameraJumpShift *= 1.1F;
+                cameraJumpShift *= 1.05F;
             }
         }
 

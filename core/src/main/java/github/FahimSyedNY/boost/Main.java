@@ -23,6 +23,7 @@ public class Main extends ApplicationAdapter {
     Player player;
     Level level;
     Background[] BGlayers;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
