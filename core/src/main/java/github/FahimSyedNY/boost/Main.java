@@ -31,7 +31,7 @@ public class Main extends ApplicationAdapter {
         viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
 
-        player = new Player(0, 0);
+        player = new Player(0, 0, camera);
         level = new Level();
 
         BGlayers = new Background[6];
@@ -48,7 +48,7 @@ public class Main extends ApplicationAdapter {
         player.update();
 
 
-        camera.position.set(Player.xDelta + (viewport.getWorldWidth() / 2f) - 32, Player.yDelta + (viewport.getWorldHeight() / 2f) - 32, 0);
+        camera.position.set(Player.xDelta + (viewport.getWorldWidth() / 2f) - 32, Player.yDelta + (viewport.getWorldHeight() / 2f) - 33 + player.totalCamShift, 0);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
