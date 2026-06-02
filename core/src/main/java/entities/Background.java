@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.awt.*;
 
 public class Background {
-    private Texture background;
-    private double parallax;
+    private final Texture background;
+    private final double parallax;
     private final int width;
 
     public Background(Double parallax, int num) {
@@ -23,7 +23,7 @@ public class Background {
         float cameraBottom = camera.position.y - (camera.viewportHeight / 2f);
 
         float pos1 = cameraLeft + (float) -((camera.position.x * parallax) % width);
-        float yPos = cameraBottom + (float) -(camera.position.y * 0.05f);
+        float yPos = cameraBottom + (float) -(camera.position.y * parallax);
 
         batch.draw(background, pos1, yPos);
         batch.draw(background, pos1 + width, yPos);

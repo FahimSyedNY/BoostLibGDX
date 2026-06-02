@@ -13,8 +13,10 @@ public class KeyboardInputs implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
-            case Input.Keys.W, Input.Keys.SPACE -> player.Jump(true);
+            case Input.Keys.SPACE -> player.Jump(true);
+            case Input.Keys.W -> player.Up(true);
             case Input.Keys.A -> player.Left(true);
+            case Input.Keys.S -> player.Down(true);
             case Input.Keys.D -> player.Right(true);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(true);
         }
@@ -24,8 +26,10 @@ public class KeyboardInputs implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         switch (keycode) {
-            case Input.Keys.W, Input.Keys.SPACE -> player.Jump(false);
+            case Input.Keys.SPACE -> player.Jump(false);
+            case Input.Keys.W -> player.Up(false);
             case Input.Keys.A -> player.Left(false);
+            case Input.Keys.S -> player.Down(false);
             case Input.Keys.D -> player.Right(false);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(false);
         }

@@ -47,8 +47,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         player.update();
 
-
-        camera.position.set(Player.xDelta + (viewport.getWorldWidth() / 2f) - 32, Player.yDelta + (viewport.getWorldHeight() / 2f) - 32, 0);
+        camera.position.set(Player.xDelta + (viewport.getWorldWidth() / 2f) - 32, Player.yDelta + (viewport.getWorldHeight() / 2f) - 33 + player.totalCamShift, 0);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
