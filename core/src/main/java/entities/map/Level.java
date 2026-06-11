@@ -10,7 +10,7 @@ import entities.Player;
 
 public class Level {
     private static final Json json = new Json();
-    private static final TilemapData tilemap = json.fromJson(TilemapData.class, Gdx.files.internal("data/map.json"));;
+    private static final TilemapData tilemap = json.fromJson(TilemapData.class, Gdx.files.internal("data/map.json"));
     private static TextureRegion[][] tiles;
     private static int widthInTiles;
     private static int tileSize;

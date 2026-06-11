@@ -218,7 +218,7 @@ public class Player {
     public void animate() {
         aniTick++;
         if (aniTick > 59 && !shiftPressed) aniTick = 0;
-        else if (aniTick > 59 && shiftPressed) aniTick = 18;
+        else if (aniTick > 59) aniTick = 18;
 
         if (Math.abs(velX) > 1 && !shiftPressed) currentPlayer = aniWalks[aniTick / (60 / aniWalks.length)];
         else if (Math.abs(velX) > 1 && shiftPressed) currentPlayer = aniRuns[aniTick / (60 / aniRuns.length)];
