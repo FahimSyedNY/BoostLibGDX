@@ -16,11 +16,11 @@ public class Inputs implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
-            case Input.Keys.SPACE -> player.Jump(true);
+            case Input.Keys.SPACE, Input.Keys.DPAD_UP -> player.Jump(true);
             case Input.Keys.W -> player.Up(true);
-            case Input.Keys.A -> player.Left(true);
-            case Input.Keys.S -> player.Down(true);
-            case Input.Keys.D -> player.Right(true);
+            case Input.Keys.A, Input.Keys.DPAD_LEFT -> player.Left(true);
+            case Input.Keys.S, Input.Keys.DPAD_DOWN -> player.Down(true);
+            case Input.Keys.D, Input.Keys.DPAD_RIGHT -> player.Right(true);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(true);
         }
         return true;
@@ -29,11 +29,11 @@ public class Inputs implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         switch (keycode) {
-            case Input.Keys.SPACE -> player.Jump(false);
+            case Input.Keys.SPACE, Input.Keys.DPAD_UP -> player.Jump(false);
             case Input.Keys.W -> player.Up(false);
-            case Input.Keys.A -> player.Left(false);
-            case Input.Keys.S -> player.Down(false);
-            case Input.Keys.D -> player.Right(false);
+            case Input.Keys.A, Input.Keys.DPAD_LEFT -> player.Left(false);
+            case Input.Keys.S, Input.Keys.DPAD_DOWN -> player.Down(false);
+            case Input.Keys.D, Input.Keys.DPAD_RIGHT -> player.Right(false);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(false);
             case Input.Keys.C -> Main.isDynaCam();
         }

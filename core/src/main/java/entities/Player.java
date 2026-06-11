@@ -61,10 +61,10 @@ public class Player {
         yDelta = y;
 
         Texture aniIdleSet = new Texture(Gdx.files.internal("player/LittleGuyIdle.png"));
-        Texture aniWalkSet = new Texture(Gdx.files.internal("player/Punk_run.png"));
+        Texture aniWalkSet = new Texture(Gdx.files.internal("player/LittleGuyWalk.png"));
         Texture aniRunSet = new Texture(Gdx.files.internal("player/LittleGuyRun.png"));
         aniIdles = TextureRegion.split(aniIdleSet, 28, 32)[0];
-        aniWalks = TextureRegion.split(aniWalkSet, 48, 48)[0];
+        aniWalks = TextureRegion.split(aniWalkSet, 32, 32)[0];
         aniRuns = TextureRegion.split(aniRunSet, 28, 32)[0];
         for (TextureRegion region : aniRuns) {
             region.flip(true, false);
@@ -120,7 +120,7 @@ public class Player {
         shapeRenderer.rect(feet.x, feet.y, feet.width, feet.height);
     }
 
-    //<editor-fold desc="Game Loop">
+    //<editor-fold desc="Game Loop -- Fahim">
     public void velUpdate() {
         //Horizontal Movement
         if (leftPressed) velX -= ACCELERATION;
@@ -225,7 +225,7 @@ public class Player {
     }
     //</editor-fold>
 
-    //<editor-fold desc="Getters/Setters">
+    //<editor-fold desc="Getters/Setters -- Darren">
     public double getVelX() {
         return velX;
     } // Or make velX/velY static if you prefer
@@ -268,7 +268,7 @@ public class Player {
     }
     //</editor-fold>
 
-    //<editor-fold desc="Inputs">
+    //<editor-fold desc="Inputs -- Ayden">
     public void Up(boolean isTrue) {
         upPressed = isTrue;
     }
@@ -297,11 +297,6 @@ public class Player {
         if (isTrue) MAX_SPEED = 6.0;
         else MAX_SPEED = 3.0;
         aniTick = 0;
-    }
-
-    public void Click(float posX, float posY) {
-        xBound = posX;
-        yBound = posY;
     }
     //</editor-fold>
 }

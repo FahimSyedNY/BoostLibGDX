@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.awt.*;
 
+//Evan
+
 public class Background {
     private final Texture background;
     private final double parallax;
