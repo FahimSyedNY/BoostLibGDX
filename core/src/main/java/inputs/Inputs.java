@@ -35,6 +35,7 @@ public class Inputs implements InputProcessor {
             case Input.Keys.S -> player.Down(false);
             case Input.Keys.D -> player.Right(false);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(false);
+            case Input.Keys.C -> Main.isDynaCam();
         }
         return true;
     }
@@ -46,10 +47,7 @@ public class Inputs implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touchPoint.set(screenX, screenY, 0);
-        Main.camera.unproject(touchPoint);
-        player.Click(touchPoint.x, touchPoint.y);
-        return true;
+        return false;
     }
 
     @Override

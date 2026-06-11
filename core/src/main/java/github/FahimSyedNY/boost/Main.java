@@ -18,9 +18,10 @@ import inputs.Inputs;
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Texture image;
-    public static OrthographicCamera camera;
+    private OrthographicCamera camera;
     private Viewport viewport;
     private ShapeRenderer shapeRenderer;
+    private static boolean dynaCam;
 
     Player player;
     Level level;
@@ -51,7 +52,9 @@ public class Main extends ApplicationAdapter {
     public void render() {
         player.update();
 
-        camera.position.set(Player.xDelta + (viewport.getWorldWidth() / 2f) - 32, Player.yDelta + (viewport.getWorldHeight() / 2f) - 33 + player.totalCamShift, 0);
+        if (dynaCam) camera.position.set(Player.xDelta + (viewport.getWorldWidth() / 2f) - 32, Player.yDelta + (viewport.getWorldHeight() / 2f) - 33 + player.totalCamShift, 0);
+        else camera.position.set(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, 0);
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
@@ -67,15 +70,21 @@ public class Main extends ApplicationAdapter {
 
         batch.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        level.renderDebug(shapeRenderer);
-        player.renderDebug(shapeRenderer);
-        shapeRenderer.end();
+        if (!dynaCam) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            level.renderDebug(shapeRenderer);
+            player.renderDebug(shapeRenderer);
+            shapeRenderer.end();
+        }
     }
 
     @Override
     public void dispose() {
         batch.dispose();
         image.dispose();
+    }
+
+    public static void isDynaCam() {
+        dynaCam = !dynaCam;
     }
 }

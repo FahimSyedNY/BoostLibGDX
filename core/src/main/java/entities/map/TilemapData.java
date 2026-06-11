@@ -1,5 +1,4 @@
 package entities.map;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -27,7 +26,6 @@ public class TilemapData {
         }
 
         public void renderDebug(ShapeRenderer shapeRenderer) {
-            shapeRenderer.setColor(Color.BLUE);
             shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
     }

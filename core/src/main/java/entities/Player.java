@@ -70,10 +70,10 @@ public class Player {
             region.flip(true, false);
         }
 
-        bounds = new Rectangle(x, y, 28F, 32F);
-        nextXBounds = new Rectangle(x, y, 28F, 32F);
-        nextYBounds = new Rectangle(x, y, 28F, 32F);
-        feet = new Rectangle(bounds.x + 2, bounds.y - 2, 24, 2);
+        bounds = new Rectangle(x, y, 12F, 28F);
+        nextXBounds = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        nextYBounds = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
+        feet = new Rectangle(bounds.x + 2, bounds.y - 2, bounds.width - 4, 2);
     }
 
     public void render(SpriteBatch batch) {
@@ -111,7 +111,6 @@ public class Player {
             velY = 0;
         }
 
-
         animate();
     }
 
@@ -120,7 +119,6 @@ public class Player {
         shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
         shapeRenderer.rect(feet.x, feet.y, feet.width, feet.height);
     }
-
 
     //<editor-fold desc="Game Loop">
     public void velUpdate() {
@@ -186,6 +184,7 @@ public class Player {
     }
 
     private void moveX() {
+        if (xBound > 100) xBound = 100;
         if (velX > 0 && xBound < 100) xBound += (float) velX;
         else if (velX < 0 && xBound > 0) xBound += (float) velX;
         else xDelta += (float) velX;
@@ -227,11 +226,25 @@ public class Player {
     //</editor-fold>
 
     //<editor-fold desc="Getters/Setters">
-    public double getVelX() { return velX; } // Or make velX/velY static if you prefer
-    public double getVelY() { return velY; }
-    public void setVelX(double val) { velX = val; }
-    public void setVelY(double val) { velY = val; }
-    public void setIsGrounded(boolean grounded) { isGrounded = grounded; }
+    public double getVelX() {
+        return velX;
+    } // Or make velX/velY static if you prefer
+
+    public double getVelY() {
+        return velY;
+    }
+
+    public void setVelX(double val) {
+        velX = val;
+    }
+
+    public void setVelY(double val) {
+        velY = val;
+    }
+
+    public void setIsGrounded(boolean grounded) {
+        isGrounded = grounded;
+    }
 
     public void setXPosition(float totalX) {
         // Distribute total position back into your delta/bound split variables
