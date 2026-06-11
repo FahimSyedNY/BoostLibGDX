@@ -5,20 +5,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import entities.Background;
-import entities.Level;
+import entities.map.Level;
 import entities.Player;
-import inputs.KeyboardInputs;
+import inputs.Inputs;
 
 ///** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Texture image;
-    private OrthographicCamera camera;
+    public static OrthographicCamera camera;
     private Viewport viewport;
+    private ShapeRenderer shapeRenderer;
 
     Player player;
     Level level;
@@ -32,15 +34,16 @@ public class Main extends ApplicationAdapter {
         viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
 
-        player = new Player(0, 0);
-        level = new Level();
+        player = new Player(Level.getTilemapData().tileSize * 2, Level.getTilemapData().tileSize * 4);
+        level = new Level(player);
+        shapeRenderer = new ShapeRenderer();
 
         BGlayers = new Background[6];
         for (int i = 0; i < 6; i++) {
             BGlayers[i] = new Background(((double) i / 10) + 0.1, i + 1);
         }
 
-        KeyboardInputs inputProcessor = new KeyboardInputs(player);
+        Inputs inputProcessor = new Inputs(player);
         Gdx.input.setInputProcessor(inputProcessor);
     }
 
@@ -63,6 +66,11 @@ public class Main extends ApplicationAdapter {
         player.render(batch); // Cast Y to int for rendering
 
         batch.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        level.renderDebug(shapeRenderer);
+        player.renderDebug(shapeRenderer);
+        shapeRenderer.end();
     }
 
     @Override

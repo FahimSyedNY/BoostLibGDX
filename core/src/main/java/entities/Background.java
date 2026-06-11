@@ -23,7 +23,7 @@ public class Background {
         float cameraBottom = camera.position.y - (camera.viewportHeight / 2f);
 
         float pos1 = cameraLeft + (float) -((camera.position.x * parallax) % width);
-        float yPos = cameraBottom + (float) -(camera.position.y * parallax);
+        float yPos = cameraBottom + (float) -(camera.position.y * parallax) + 50;
 
         batch.draw(background, pos1, yPos);
         batch.draw(background, pos1 + width, yPos);

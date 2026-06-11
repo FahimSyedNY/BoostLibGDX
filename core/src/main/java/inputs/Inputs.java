@@ -1,12 +1,15 @@
 package inputs;
+import com.badlogic.gdx.math.Vector3;
 import entities.Player;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import github.FahimSyedNY.boost.Main;
 
-public class KeyboardInputs implements InputProcessor {
+public class Inputs implements InputProcessor {
     Player player;
+    Vector3 touchPoint = new Vector3();
 
-    public KeyboardInputs(Player player) {
+    public Inputs(Player player) {
         this.player = player;
     }
 
@@ -42,8 +45,11 @@ public class KeyboardInputs implements InputProcessor {
     }
 
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
-        return false;
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        touchPoint.set(screenX, screenY, 0);
+        Main.camera.unproject(touchPoint);
+        player.Click(touchPoint.x, touchPoint.y);
+        return true;
     }
 
     @Override
