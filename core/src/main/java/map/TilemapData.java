@@ -1,4 +1,4 @@
-package entities.map;
+package map;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -19,6 +19,7 @@ public class TilemapData {
         public String id; // The ID of the sprite in your spritesheet
         public int x;     // Grid X position
         public int y;     // Grid Y position
+        public Attributes attributes;
 
         public Rectangle bounds;
         public void populateBounds (int tileSize, int mapHeight) {
@@ -28,5 +29,9 @@ public class TilemapData {
         public void renderDebug(ShapeRenderer shapeRenderer) {
             shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
+    }
+
+    public static class Attributes {
+        public String enemyType;
     }
 }

@@ -22,6 +22,8 @@ public class Inputs implements InputProcessor {
             case Input.Keys.S, Input.Keys.DPAD_DOWN -> player.Down(true);
             case Input.Keys.D, Input.Keys.DPAD_RIGHT -> player.Right(true);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(true);
+            case Input.Keys.LEFT_BRACKET -> Main.cameraZoomUp(true);
+            case Input.Keys.RIGHT_BRACKET -> Main.cameraZoomDown(true);
         }
         return true;
     }
@@ -36,6 +38,10 @@ public class Inputs implements InputProcessor {
             case Input.Keys.D, Input.Keys.DPAD_RIGHT -> player.Right(false);
             case Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT -> player.Sprint(false);
             case Input.Keys.C -> Main.isDynaCam();
+            case Input.Keys.LEFT_BRACKET -> Main.cameraZoomUp(false);
+            case Input.Keys.RIGHT_BRACKET -> Main.cameraZoomDown(false);
+            case Input.Keys.ESCAPE -> Main.setPause();
+            case Input.Keys.M -> Main.muteMusic();
         }
         return true;
     }

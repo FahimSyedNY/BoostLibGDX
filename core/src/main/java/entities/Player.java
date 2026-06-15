@@ -1,93 +1,77 @@
 package entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import entities.map.Level;
+import github.FahimSyedNY.boost.Main;
+import map.Level;
 
-public class Player {
+public class Player extends Entity {
     //<editor-fold desc="Class Vars">
-    private boolean rightPressed = false;
-    private boolean leftPressed = false;
-    private boolean jumpPressed = false;
-    private boolean shiftPressed = false;
-    private boolean downPressed = false;
-    private boolean upPressed = false;
-
-    // Horizontal Physics
-    private double velX = 0;
-    private final double ACCELERATION = 0.6;
-    private final double FRICTION = 0.85;
-    private double MAX_SPEED = 3.0;
-
-    // Vertical Physics constants
-    private double velY = 0;
-    private final double GRAVITY = -0.6;
-    private final double JUMP_FORCE = 13.0;
-    private final int FLOOR_Y = 0;
-    private boolean isGrounded = true;
-
-    public static Rectangle bounds;
-    public static Rectangle nextXBounds;
-    public static Rectangle nextYBounds;
-    public static Rectangle feet;
-
-    public static float xDelta;
-    public static float yDelta;
-    private static float xBound;
-    private static float yBound;
-
-    private static int aniTick;
-
-    private final TextureRegion[] aniIdles;
-    private final TextureRegion[] aniWalks;
-    private final TextureRegion[] aniRuns;
-
-    private TextureRegion currentPlayer;
-    private float flip = 1.0f;
-
-    private float cameraJumpShift = 0f;
-    private float cameraDownShift = 0f;
-    private float cameraUpShift = 0f;
-    public float totalCamShift = 0f;
+    private boolean rightPressed, leftPressed, jumpPressed, shiftPressed, downPressed, upPressed, isJumping, isWalking, isRunning;
+    private final float ACCELERATION = 0.6F, FRICTION = 0.85F;
+    private static float xBound, yBound;
+    private final TextureRegion[] aniIdles, aniWalks, aniRuns, aniJumps;
+    private float cameraJumpShift, cameraDownShift, cameraUpShift, totalCamShift;
+    private int coins, airFrames;
+    private final Sound walk, run, jump, hurt;
     //</editor-fold>
 
-    public Player(int x, int y) {
-        xDelta = x;
-        yDelta = y;
+    public Player(float x, float y, float width, float height) {
+        super(x, y, width, height, 3);
 
-        Texture aniIdleSet = new Texture(Gdx.files.internal("player/LittleGuyIdle.png"));
-        Texture aniWalkSet = new Texture(Gdx.files.internal("player/LittleGuyWalk.png"));
-        Texture aniRunSet = new Texture(Gdx.files.internal("player/LittleGuyRun.png"));
-        aniIdles = TextureRegion.split(aniIdleSet, 28, 32)[0];
-        aniWalks = TextureRegion.split(aniWalkSet, 32, 32)[0];
-        aniRuns = TextureRegion.split(aniRunSet, 28, 32)[0];
+        aniJumps = TextureRegion.split(new Texture(Gdx.files.internal("player/LittleGuyJump.png")), 32, 32)[0];
+        aniIdles = TextureRegion.split(new Texture(Gdx.files.internal("player/LittleGuyIdle.png")), 28, 32)[0];
+        aniWalks = TextureRegion.split(new Texture(Gdx.files.internal("player/LittleGuyWalk.png")), 32, 32)[0];
+        aniRuns = TextureRegion.split(new Texture(Gdx.files.internal("player/LittleGuyRun.png")), 28, 32)[0];
         for (TextureRegion region : aniRuns) {
             region.flip(true, false);
         }
 
-        bounds = new Rectangle(x, y, 12F, 28F);
-        nextXBounds = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-        nextYBounds = new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-        feet = new Rectangle(bounds.x + 2, bounds.y - 2, bounds.width - 4, 2);
+        feetLength = -4;
+        feet = new Rectangle(bounds.x - feetLength / 2, bounds.y - 2, bounds.width + feetLength, 2);
+
+        jumpForce = 13F;
+        maxSpeed = 3F;
+        gravity = -0.6F;
+
+        walk = Gdx.audio.newSound(Gdx.files.internal("sounds/Walk.mp3"));
+        run = Gdx.audio.newSound(Gdx.files.internal("sounds/Run.mp3"));
+        jump = Gdx.audio.newSound(Gdx.files.internal("sounds/Jump.mp3"));
+        hurt = Gdx.audio.newSound(Gdx.files.internal("sounds/Hurt.mp3"));
+
     }
 
     public void render(SpriteBatch batch) {
+        if (isInvincible) {
+            oldColor = batch.getColor();
+            batch.setColor(oldColor.r, oldColor.g, oldColor.b, 0.5f);
+        }
+
+        renderHearts(batch);
+
+        if (isInvincible) {
+            batch.setColor(oldColor.r, oldColor.g * 0.3f, oldColor.b * 0.3f, 1f);
+        }
+
         batch.draw(
-            currentPlayer,
-            xDelta + xBound - 8,
+            currentFrame,
+            xDelta + xBound + (bounds.getWidth() - currentFrame.getRegionWidth()) / 2f,
             yDelta + yBound,
-            currentPlayer.getRegionWidth() / 2f,
-            currentPlayer.getRegionHeight() / 2f,
-            currentPlayer.getRegionWidth(),
-            currentPlayer.getRegionHeight(),
+            currentFrame.getRegionWidth() / 2f,
+            currentFrame.getRegionHeight() / 2f,
+            currentFrame.getRegionWidth(),
+            currentFrame.getRegionHeight(),
             flip, 1.0f,
             0.0f
         );
+
+        if (isInvincible) {
+            batch.setColor(oldColor.r, oldColor.g / 0.3f, oldColor.b / 0.3f, 1f);
+        }
     }
 
     public void update() {
@@ -95,32 +79,26 @@ public class Player {
 
         cameraY();
 
-        if (!Level.wouldXCollide()) {
+        if (!Level.wouldXCollide(this)) {
             moveX();
-            Level.checkHorizontalCollisions();
-        } else {
-            velX = 0;
-        }
+            Level.checkHorizontalCollisions(this);
+        } else velX = 0;
 
-        isGrounded = Level.isStandingOnGround();
+        isGrounded = Level.isStandingOnGround(this);
 
-        if (!Level.wouldYCollide()) {
+        if (!Level.wouldYCollide(this)) {
             moveY();
-            Level.checkVerticalCollisions();
-        } else {
-            velY = 0;
-        }
+            Level.checkVerticalCollisions(this);
+        } else velY = 0;
+
+        walkAudio();
+
+        if (isInvincible) invDuration();
 
         animate();
     }
 
-    public void renderDebug(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-        shapeRenderer.rect(feet.x, feet.y, feet.width, feet.height);
-    }
-
-    //<editor-fold desc="Game Loop -- Fahim">
+    //<editor-fold desc="Game Loop">
     public void velUpdate() {
         //Horizontal Movement
         if (leftPressed) velX -= ACCELERATION;
@@ -131,20 +109,26 @@ public class Player {
             if (Math.abs(velX) < 0.1) velX = 0;
         }
 
-        if (velX > MAX_SPEED) velX = MAX_SPEED;
-        if (velX < -MAX_SPEED) velX = -MAX_SPEED;
+        if (velX > maxSpeed) velX = maxSpeed;
+        if (velX < -maxSpeed) velX = -maxSpeed;
 
-        // Vertical Movement
+//         Vertical Movement
         if (!isGrounded) {
-            velY += GRAVITY;
+            velY += gravity;
         } else if (velY < 0) {
             velY = 0;
         }
 
-        if (jumpPressed && isGrounded) {
-            velY = JUMP_FORCE;
+        if (jumpPressed && isGrounded && velY < 13) {
+            velY = jumpForce;
             isGrounded = false;
+            aniTick = 0;
+            if (!Level.wouldYCollide(this)) {
+                jump.play();
+            }
         }
+
+        if (velY > 12) isJumping = true;
 
         nextXBounds.setPosition((float) (bounds.x + velX), bounds.y);
         nextYBounds.setPosition(bounds.x, (float) (bounds.y + velY));
@@ -183,7 +167,7 @@ public class Player {
         totalCamShift = cameraJumpShift + cameraDownShift * 5 + cameraUpShift * 2;
     }
 
-    private void moveX() {
+    public void moveX() {
         if (xBound > 100) xBound = 100;
         if (velX > 0 && xBound < 100) xBound += (float) velX;
         else if (velX < 0 && xBound > 0) xBound += (float) velX;
@@ -197,14 +181,14 @@ public class Player {
         feet.setPosition(bounds.x + 2, bounds.y - 2);
     }
 
-    private void moveY() {
+    public void moveY() {
         if (velY > 0 && yBound < 120) yBound += (float) (velY * 0.8);
         else if (velY < 0 && yBound > 0) yBound += (float) velY;
         else if (velY > 0) yDelta += (float) (velY * 0.8);
         else yDelta += (float) velY;
 
-        if ((yDelta + yBound) <= FLOOR_Y) {
-            yDelta = FLOOR_Y;
+        if ((yDelta + yBound) <= floorY) {
+            yDelta = floorY;
             yBound = 0;
             velY = 0;
             isGrounded = true;
@@ -214,38 +198,93 @@ public class Player {
         feet.setPosition(bounds.x + 2, bounds.y - 2);
     }
 
+    public void walkAudio() {
+        if ((leftPressed || rightPressed) && !shiftPressed && !isWalking && isGrounded && velX != 0) {
+            walk.loop();
+            isWalking = true;
+            if (isRunning) {
+                isRunning = false;
+                run.stop();
+            }
+        }
+
+        if (!(leftPressed || rightPressed) && isWalking || !isGrounded || velX == 0) {
+            walk.stop();
+            isWalking = false;
+        }
+
+        if ((leftPressed || rightPressed) && shiftPressed && !isRunning && isGrounded && velX != 0) {
+            run.loop();
+            isRunning = true;
+            if (isWalking) {
+                isWalking = false;
+                walk.stop();
+            }
+        }
+
+        if (!(leftPressed || rightPressed) && isRunning || !isGrounded || velX == 0) {
+            run.stop();
+            isRunning = false;
+        }
+    }
+
     public void animate() {
         aniTick++;
         if (aniTick > 59 && !shiftPressed) aniTick = 0;
         else if (aniTick > 59) aniTick = 18;
 
-        if (Math.abs(velX) > 1 && !shiftPressed) currentPlayer = aniWalks[aniTick / (60 / aniWalks.length)];
-        else if (Math.abs(velX) > 1 && shiftPressed) currentPlayer = aniRuns[aniTick / (60 / aniRuns.length)];
-        else currentPlayer = aniIdles[aniTick / (60 / aniIdles.length)];
+        if (!isJumping) {
+            if (Math.abs(velX) > 1 && !shiftPressed) currentFrame = aniWalks[aniTick / (60 / aniWalks.length)];
+            else if (Math.abs(velX) > 1 && shiftPressed) currentFrame = aniRuns[aniTick / (60 / aniRuns.length)];
+            else currentFrame = aniIdles[aniTick / (60 / aniIdles.length)];
+        } else {
+            int frame = (int) (5 * (1 - Math.abs(velY) / jumpForce));
+            if (frame >= 4) frame = 3;
+            if (frame < 0) frame = 0;
+            currentFrame = aniJumps[frame];
+            if (isGrounded) isJumping = false;
+        }
     }
     //</editor-fold>
 
-    //<editor-fold desc="Getters/Setters -- Darren">
-    public double getVelX() {
-        return velX;
-    } // Or make velX/velY static if you prefer
-
-    public double getVelY() {
-        return velY;
+    //<editor-fold desc="Getters/Setters">
+    public float getXDelta() {
+        return xDelta;
     }
 
-    public void setVelX(double val) {
-        velX = val;
+    public float getYDelta() {
+        return yDelta;
     }
 
-    public void setVelY(double val) {
-        velY = val;
+    public float getXPlayer() {
+        return xDelta + xBound;
     }
 
-    public void setIsGrounded(boolean grounded) {
-        isGrounded = grounded;
+    public float getYPlayer() {
+        return yDelta + yBound;
     }
 
+    public float getTotalCamShift() {
+        return totalCamShift;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void damage() {
+        if (!isInvincible && health > 0) {
+            health--;
+            hurt.play();
+        }
+        if (health == 0) Main.setPause(true);
+    }
+
+    public void addCoin() {
+        coins++;
+    }
+
+    @Override
     public void setXPosition(float totalX) {
         // Distribute total position back into your delta/bound split variables
         if (xBound > 0 && xBound < 100) {
@@ -257,6 +296,7 @@ public class Player {
         bounds.x = totalX;
     }
 
+    @Override
     public void setYPosition(float totalY) {
         if (yBound > 0 && yBound < 120) {
             yDelta = totalY - yBound;
@@ -268,35 +308,50 @@ public class Player {
     }
     //</editor-fold>
 
-    //<editor-fold desc="Inputs -- Ayden">
+    //<editor-fold desc="Inputs">
     public void Up(boolean isTrue) {
         upPressed = isTrue;
+        velY += 2;
     }
 
     public void Down(boolean isTrue) {
         downPressed = isTrue;
+        velY -= 2;
     }
 
     public void Left(boolean isTrue) {
         leftPressed = isTrue;
-        aniTick = 0;
+        if (!isJumping) {
+            aniTick = 0;
+        }
     }
 
     public void Right(boolean isTrue) {
         rightPressed = isTrue;
-        aniTick = 0;
+        if (!isJumping) {
+            aniTick = 0;
+        }
     }
 
     public void Jump(boolean isTrue) {
         jumpPressed = isTrue;
-        if (!isTrue) velY = velY * 0.5;
+        if (!isTrue) {
+            velY = velY * 0.5F;
+        }
     }
 
     public void Sprint(boolean isTrue) {
         shiftPressed = isTrue;
-        if (isTrue) MAX_SPEED = 6.0;
-        else MAX_SPEED = 3.0;
-        aniTick = 0;
+        if (isTrue) maxSpeed = 6.0F;
+        else maxSpeed = 3.0F;
+        if (velX > 0 && !isJumping) {
+            aniTick = 0;
+        }
+    }
+
+    public void Click(float posX, float posY) {
+        xBound = posX;
+        yBound = posY;
     }
     //</editor-fold>
 }
