@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Json;
 import entities.Entity;
 
-
+//Coded by Fahim
 public class Level {
     //<editor-fold desc="Class Vars">
     private static final Json json = new Json();

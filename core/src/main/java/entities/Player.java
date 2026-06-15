@@ -75,10 +75,14 @@ public class Player extends Entity {
     }
 
     public void update() {
+        //Physics done by Evan
         velUpdate();
 
+
+        //Dynamic Camera done by Ayden
         cameraY();
 
+        //Collisions done by Fahim
         if (!Level.wouldXCollide(this)) {
             moveX();
             Level.checkHorizontalCollisions(this);
@@ -91,10 +95,14 @@ public class Player extends Entity {
             Level.checkVerticalCollisions(this);
         } else velY = 0;
 
+
+        //Audio Done by Ayden
         walkAudio();
 
         if (isInvincible) invDuration();
 
+
+        //Animations done by Evan
         animate();
     }
 
@@ -247,6 +255,7 @@ public class Player extends Entity {
     }
     //</editor-fold>
 
+    //Getters/Setters done by Darren
     //<editor-fold desc="Getters/Setters">
     public float getXDelta() {
         return xDelta;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
+//Made by Darren with help
 public abstract class Collectable {
     protected float xDelta, yDelta, timer, value;
     protected Rectangle bounds;

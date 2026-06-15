@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 ///** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
+    //<editor-fold desc="Class Vars">
     private static SpriteBatch batch;
     private static BitmapFont font;
     private static OrthographicCamera camera;
@@ -42,7 +43,10 @@ public class Main extends ApplicationAdapter {
     private static ArrayList<Collectable> collectables = new ArrayList<>();
     private static Background[] BGlayers;
     private static Music bgMusic;
+    //</editor-fold>
 
+
+    //Any Audio made by Fahim
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -100,6 +104,8 @@ public class Main extends ApplicationAdapter {
         if (!paused) {
             player.update();
 
+            //Camera update by Ayden
+            //<editor-fold desc="Update Camera">
             float targetX = player.getXDelta() + (viewport.getWorldWidth() / 2f) - 32;
             float targetY = player.getYDelta() + (viewport.getWorldHeight() / 2f) - 33 + player.getTotalCamShift();
 
@@ -122,18 +128,16 @@ public class Main extends ApplicationAdapter {
             viewport.apply();
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
+            //</editor-fold>
 
-            for (Background bg : BGlayers) {
-                bg.render(batch, camera);
-            }
 
+            //Background by Fahim
+            for (Background bg : BGlayers) bg.render(batch, camera);
             level.render(batch);
-
             for (Collectable collectable : collectables) {
                 collectable.update();
                 collectable.render(batch);
             }
-
             for (Enemy enemy : enemies) {
                 enemy.update();
                 enemy.render(batch);
@@ -143,7 +147,7 @@ public class Main extends ApplicationAdapter {
 
             batch.end();
 
-            //Debug
+            //Debug included by Ayden
             if (showHitboxes) {
                 shapeRenderer.setProjectionMatrix(camera.combined);
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -172,6 +176,7 @@ public class Main extends ApplicationAdapter {
 
             batch.end();
         } else {
+            // Pause menu done by Evan
             ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
             uiViewport.apply();
             batch.setProjectionMatrix(uiCamera.combined);

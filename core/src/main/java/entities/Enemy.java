@@ -27,6 +27,8 @@ public abstract class Enemy extends Entity {
     }
 
     public void update() {
+        //Physics - Evan, Collisions - Fahim
+
         if (!isDead) {
             velUpdate();
             inRange = player.getXPlayer() - range < xDelta && xDelta < player.getXPlayer() + range
